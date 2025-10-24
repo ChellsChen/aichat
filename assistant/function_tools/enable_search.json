@@ -1,0 +1,28 @@
+[
+    {
+        "type": "function",
+        "function":
+        {
+            "name": "search_google",
+            "description": "当 gpt 遇到无法回答的或者需要搜索引擎协助回答时从 google 搜索",
+            "parameters":
+            {
+                "type": "object",
+                "properties":
+                {
+                    "query":
+                    {
+                        "type": "string",
+                        "description": "搜索句，支持中文或者英文"
+                    }
+                },
+                "query":
+                [
+                    "url"
+                ],
+                "additionalProperties": false
+            }
+        },
+        "strict": true
+    }
+]

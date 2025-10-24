@@ -1,0 +1,28 @@
+[
+    {
+        "type": "function",
+        "function":
+        {
+            "name": "browse_web",
+            "description": "浏览网页",
+            "parameters":
+            {
+                "type": "object",
+                "properties":
+                {
+                    "url":
+                    {
+                        "type": "string",
+                        "description": "网页链接"
+                    }
+                },
+                "required":
+                [
+                    "url"
+                ],
+                "additionalProperties": false
+            }
+        },
+        "strict": true
+    }
+]

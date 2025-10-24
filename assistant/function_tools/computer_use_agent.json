@@ -1,0 +1,28 @@
+[
+    {
+        "type": "function",
+        "function":
+        {
+            "name": "computer_use_agent",
+            "description": "当需要操作电脑时调用此接口",
+            "parameters":
+            {
+                "type": "object",
+                "properties":
+                {
+                    "op_instruction":
+                    {
+                        "type": "string",
+                        "description": "操作指令"
+                    }
+                },
+                "op_instruction":
+                [
+                    "url"
+                ],
+                "additionalProperties": false
+            }
+        },
+        "strict": true
+    }
+]
