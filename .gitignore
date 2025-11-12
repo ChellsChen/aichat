@@ -1,3 +1,16 @@
 *.pyc
-__pycache__/
 migrations
+conf/config.yaml
+data
+logs
+docker-compose.yaml
+*.tar
+datas
+deploy/
+build-base.sh
+clear.sh
+Dockerfile.base
+conf/*.yaml
+libs
+doc
+.gitignore

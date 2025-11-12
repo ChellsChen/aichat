@@ -28,7 +28,7 @@ class ModelBase(models.Model):
 
         self.version += 1
 
-        return super(QWModelBase, self).save(*args, **kwargs)
+        return super(ModelBase, self).save(*args, **kwargs)
 
     class Meta:
         # ordering = ('-gmt_create', )
