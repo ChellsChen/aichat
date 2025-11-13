@@ -103,7 +103,7 @@ class OpenAI_API(object):
         title = completion.choices[0].message.content
         return title
 
-    def generate_title(self, messages):
+    def generate_title(self, messages, model='gpt-3.5-turbo'):
         content = '使用四到五个字直接返回这段对话句话的简要主题，不要解释、不要标点、不要语气词、不要多余文本，不要加粗，如果没有主题，请直接返回“闲聊”'
         message = {
             'role': 'user',
@@ -113,8 +113,10 @@ class OpenAI_API(object):
             }]
         }
         messages.append(message)
+        if model is None:
+            model='gpt-3.5-turbo'
         completion = self.client.chat.completions.create(
-          model='gpt-3.5-turbo',
+          model=model,
           messages=messages
         )
         title = completion.choices[0].message.content

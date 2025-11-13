@@ -15,6 +15,7 @@ from llm.client.deepseek_api import deepseek_api, DeepSeek_API
 
 class BaseChatRunTime(object):
     provider = None
+    common_model = 'gpt-3.5-turbo'
 
     ROLE_ASSISTANT_USER = 'assistant_user'
 
@@ -246,7 +247,7 @@ class BaseChatRunTime(object):
                         i.pop('assistant', None)
                     title_msg.append(i)
 
-            name = self.client_api.generate_title(title_msg)
+            name = self.client_api.generate_title(title_msg, self.common_model)
             chat.name = name
 
         chat.save()
@@ -712,11 +713,17 @@ class DeepSeekRunTime(BaseChatRunTime):
             self.tool_call_id = tool_calls[0].id
 
 
+class QwenChatRunTime(OpenAIChatRunTime):
+    common_model = 'qwen-plus'
+    pass
+
+
 RUNTIME_MAPS = {
     'openai': OpenAIChatRunTime,
     'anthropic': AnthropicChatRunTime,
     'doubao': DouBaoRunTime,
-    'deepseek': DeepSeekRunTime
+    'deepseek': DeepSeekRunTime,
+    'qwen': QwenChatRunTime
 }
 
 
