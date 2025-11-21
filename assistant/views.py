@@ -542,6 +542,64 @@ class AssistantViewSet(viewsets.ModelViewSet):
         # chat api 模式助手
         return self._start_chat_stream_with_chatapi(request, chat_assistant, assistant, content, message, chat, attachments, new_flag, chat_options,False)
 
+
+    @action(methods=['post'], detail=False)
+    def start_chat_stream_new(self, request, *args, **kwargs):
+        assistant_uuid = request.data.get('assistant_uuid')
+        chat_assistant_uuid = request.data.get('chat_assistant_uuid')
+        chat_uuid = request.data.get('chatid')
+        message = request.data.get('message')
+        content = request.data.get('content')
+        attachments = request.data.get('attachments')
+        chat_options = request.data.get('chat_options')
+
+        def generate_data_error(resp_data):
+            data = json.dumps(resp_data)
+            yield 'event: message\ndata: {} \n\n'.format(data)
+
+        def error_response(resp_data):
+            return StreamingHttpResponse(generate_data_error(resp_data), content_type='text/event-stream')
+
+        def response_json(resp_data):
+            print(resp_data)
+            return Response(resp_data) 
+
+        if not assistant_uuid:
+            return response_json({'success': False, 'errorMessage': 'need assistant_uuid'})
+
+        ret, res = self._check_assistant(request.user, assistant_uuid, content, attachments)
+        if not ret:
+            return response_json(res)
+
+        assistant = res
+
+        ret, res = self._check_assistant(request.user, chat_assistant_uuid, content, attachments)
+        if not ret:
+            return response_json(res)
+
+        chat_assistant = res
+
+        new_flag = False
+
+        if chat_uuid:
+            chat = Chat.objects.filter(uuid=chat_uuid).first()
+            if not chat:
+                return response_json({'success': False, 'errorMessage': 'not found this chat'})
+        else:
+            new_flag = True
+            chat = Chat(user=request.user, assistant=chat_assistant)
+            if assistant.mode == Assistant.ASSISTANT_MODE_ASSISTANT:
+                thread = openai_api.create_thread()
+                chat.thread_id = thread.id
+            chat.save()
+
+            # chat member
+            chat_member = AssistantChat(assistant=chat_assistant, chat=chat)
+            chat_member.save()
+        
+        # chat api 模式助手
+        return self._start_chat_stream_with_chatapi(request, chat_assistant, assistant, content, message, chat, attachments, new_flag, chat_options,False)
+
 class ChatViewSet(viewsets.ModelViewSet):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
