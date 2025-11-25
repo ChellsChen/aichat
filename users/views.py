@@ -10,7 +10,7 @@ from django.core.cache import cache
 from django.utils.timezone import now
 from django.conf import settings
 
-from rest_framework import filters
+from rest_framework import filters, mixins
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
@@ -20,7 +20,13 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 
-from users.serializers import UserSerializer, UserLoginSerializer, UserLoginRequestSerializer, UserExtensionKeySerializer
+from users.serializers import (
+    UserSerializer,
+    UserLoginSerializer,
+    UserLoginRequestSerializer,
+    UserExtensionKeySerializer,
+    UserExtensionDetailSerializer,
+)
 from aichat.permissions import ModelCRUDPermission
 from aichat.pagination import StandardResultsPagination
 from users.models import UserExtension
@@ -330,6 +336,24 @@ class UserViewSet(viewsets.ModelViewSet):
         data = UserExtensionKeySerializer(current_user.extension).data
         return Response(data)
 
+    @action(methods=['get', 'patch'], detail=False)
+    def extension(self, request, *args, **kwargs):
+        print(request.method)
+        current_user = request.user
+        if request.method == 'GET':
+            data = UserExtensionKeySerializer(current_user.extension).data
+            return Response(data)
+        else:
+            extension = current_user.extension
+            serializer = UserExtensionKeySerializer(
+                instance=extension,
+                data=request.data,
+                partial=True,
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+
 
     def update(self, request, *args, **kwargs):
         extension_data  = request.data.get('extension')
@@ -371,6 +395,14 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return super(UserViewSet, self).update(request, *args, **kwargs)
 
+
+
+class UserExtensionViewSet(mixins.RetrieveModelMixin,
+                           mixins.UpdateModelMixin,
+                           viewsets.GenericViewSet):
+    queryset = UserExtension.objects.all().order_by('-id')
+    serializer_class = UserExtensionKeySerializer
+    permission_classes = (ModelCRUDPermission,)
 
 
 

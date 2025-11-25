@@ -34,6 +34,7 @@ from usage.views import UsageBillingViewSet
 router = routers.DefaultRouter()
 
 router.register(r'users', views.UserViewSet, basename='users')
+router.register(r'user/extensions', views.UserExtensionViewSet, basename='user_extensions')
 router.register(r'assistant', AssistantViewSet, basename='assistant')
 router.register(r'assistantuser', AssistantUserViewSet, basename='assistantuser')
 router.register(r'assistantchat', AssistantChatViewSet, basename='assistantchat')

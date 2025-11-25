@@ -78,9 +78,29 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserExtensionKeySerializer(serializers.ModelSerializer):
+    # user = UserRelatedSerializer(read_only=True)
     class Meta:
         model = UserExtension
         fields = ['id', 'qwen_key', 'openai_key', 'doubao_key', 'deepseek_key', 'claude_key']
+
+
+class UserExtensionDetailSerializer(serializers.ModelSerializer):
+    user = UserRelatedSerializer(read_only=True)
+
+    class Meta:
+        model = UserExtension
+        fields = [
+            'id',
+            'user',
+            'phone',
+            'user_level',
+            'expires_time',
+            'qwen_key',
+            'openai_key',
+            'doubao_key',
+            'deepseek_key',
+            'claude_key',
+        ]
 
 
 
