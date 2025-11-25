@@ -20,7 +20,7 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 
-from users.serializers import UserSerializer, UserLoginSerializer, UserLoginRequestSerializer
+from users.serializers import UserSerializer, UserLoginSerializer, UserLoginRequestSerializer, UserExtensionKeySerializer
 from aichat.permissions import ModelCRUDPermission
 from aichat.pagination import StandardResultsPagination
 from users.models import UserExtension
@@ -322,6 +322,14 @@ class UserViewSet(viewsets.ModelViewSet):
         res = User.objects.all()
         data = [{'value': i.id, 'label': i.username} for i in res]
         return Response(data)
+
+
+    @action(methods=['get'], detail=False)
+    def extension(self, request, *args, **kwargs):
+        current_user = request.user
+        data = UserExtensionKeySerializer(current_user.extension).data
+        return Response(data)
+
 
     def update(self, request, *args, **kwargs):
         extension_data  = request.data.get('extension')

@@ -27,6 +27,12 @@ class UserExtension(ModelBase):
     expires_time = models.DateTimeField(null=True, blank=True, help_text='会员到期时间')
 
 
+    qwen_key = models.CharField(max_length=256, null=True, blank=True, help_text='qwen_api_key')
+    openai_key = models.CharField(max_length=256, null=True, blank=True, help_text='openai_api_key')
+    doubao_key = models.CharField(max_length=256, null=True, blank=True, help_text='doubao_api_key')
+    deepseek_key = models.CharField(max_length=256, null=True, blank=True, help_text='deepseek_api_key')
+    claude_key = models.CharField(max_length=256, null=True, blank=True, help_text='claude_api_key')
+
 
 @receiver(post_save, sender=User)
 def create_user_extension(sender, instance, created,**kwargs):

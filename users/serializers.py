@@ -77,6 +77,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
+class UserExtensionKeySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserExtension
+        fields = ['id', 'qwen_key', 'openai_key', 'doubao_key', 'deepseek_key', 'claude_key']
+
+
+
 
 
 
